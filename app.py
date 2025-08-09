@@ -16,31 +16,30 @@ if __name__ == "__main__":
 
 st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 
-# --- Theme button with Light/Dark options ---
+# ---- Theme selector (drop-in). Replace any earlier theme code with this block ----
 if "theme" not in st.session_state:
     st.session_state.theme = "light"
 if "show_theme" not in st.session_state:
     st.session_state.show_theme = False
 
-# Toggle show/hide of theme options
-if st.button("🎨 Theme"):
-    st.session_state.show_theme = not st.session_state.show_theme
+# Compact Theme button (tap to reveal options)
+col_t, _ = st.columns([1, 9])
+with col_t:
+    if st.button("🎨 Theme", key="theme_btn"):
+        st.session_state.show_theme = not st.session_state.show_theme
 
-# Show radio options only when requested
+# When revealed, show two small buttons (very mobile-friendly)
 if st.session_state.show_theme:
-    choice = st.radio("Choose theme", ["Light", "Dark"],
-                      index=0 if st.session_state.theme == "light" else 1,
-                      key="theme_radio")
-    st.session_state.theme = choice.lower()
+    c1, c2, _ = st.columns([1, 1, 8])
+    with c1:
+        if st.button("☀️ Light", key="theme_light"):
+            st.session_state.theme = "light"
+    with c2:
+        if st.button("🌙 Dark", key="theme_dark"):
+            st.session_state.theme = "dark"
 
-    # Rerun safely for all versions
-    try:
-        st.rerun()
-    except AttributeError:
-        st.experimental_rerun()
-
-# CSS that uses a data-theme attribute
-theme_css = """
+# CSS using data-theme attribute for reliable styling across Streamlit containers
+_theme_css = """
 <style>
 :root {
   --bg: #ffffff;
@@ -48,45 +47,60 @@ theme_css = """
   --sidebar: #f8f9fb;
   --card: #ffffff;
 }
+
+/* dark mode vars */
 [data-theme="dark"] {
   --bg: #0e1116;
   --text: #e6e6e6;
   --sidebar: #111315;
   --card: #1a1a1a;
 }
+
+/* main app container */
 [data-testid="stAppViewContainer"], .block-container {
   background-color: var(--bg) !important;
   color: var(--text) !important;
 }
+
+/* sidebar */
 [data-testid="stSidebar"] {
   background-color: var(--sidebar) !important;
   color: var(--text) !important;
 }
+
+/* markdown / headers */
 [data-testid="stMarkdownContainer"] {
   color: var(--text) !important;
 }
+
+/* buttons */
 .stButton>button {
   background-color: var(--card) !important;
   color: var(--text) !important;
-  border: 1px solid rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
 }
-[data-testid="stDataFrame"] {
-  color: var(--text) !important;
-}
+
+/* inputs */
 input, textarea, select {
   color: var(--text) !important;
   background-color: var(--card) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+/* dataframe fallback */
+[data-testid="stDataFrame"] {
+  color: var(--text) !important;
 }
 </style>
 """
-st.markdown(theme_css, unsafe_allow_html=True)
+st.markdown(_theme_css, unsafe_allow_html=True)
 
-# Apply theme
+# Apply the theme by setting data-theme on the document element (runs on each interaction)
 if st.session_state.theme == "dark":
     st.markdown("<script>document.documentElement.setAttribute('data-theme', 'dark');</script>", unsafe_allow_html=True)
 else:
     st.markdown("<script>document.documentElement.setAttribute('data-theme', 'light');</script>", unsafe_allow_html=True)
-
+# ---- end drop-in ----
 
 # Load and clean data
 df = pd.read_csv("Cleaned_Car_data.csv")
@@ -167,6 +181,7 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
 
 
