@@ -16,89 +16,6 @@ if __name__ == "__main__":
 
 st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 
-# ---- Compact, reliable Theme selector (drop-in) ----
-if "theme" not in st.session_state:
-    st.session_state.theme = "light"
-if "show_theme" not in st.session_state:
-    st.session_state.show_theme = False
-
-# Top compact button to reveal options
-col_t, _ = st.columns([1, 9])
-with col_t:
-    if st.button("🎨 Theme", key="theme_btn"):
-        st.session_state.show_theme = not st.session_state.show_theme
-
-# When revealed, show two small mobile-friendly buttons
-if st.session_state.show_theme:
-    c1, c2, _ = st.columns([1, 1, 8])
-    with c1:
-        if st.button("☀️ Light", key="theme_light"):
-            st.session_state.theme = "light"
-    with c2:
-        if st.button("🌙 Dark", key="theme_dark"):
-            st.session_state.theme = "dark"
-
-# Theme CSS
-_theme_css = """
-<style>
-:root {
-  --bg: #ffffff;
-  --text: #0b0b0b;
-  --sidebar: #f8f9fb;
-  --card: #ffffff;
-}
-[data-theme="dark"] {
-  --bg: #0e1116;
-  --text: #e6e6e6;
-  --sidebar: #111315;
-  --card: #1a1a1a;
-}
-[data-testid="stAppViewContainer"], .block-container {
-  background-color: var(--bg) !important;
-  color: var(--text) !important;
-}
-[data-testid="stSidebar"] {
-  background-color: var(--sidebar) !important;
-  color: var(--text) !important;
-}
-[data-testid="stMarkdownContainer"] {
-  color: var(--text) !important;
-}
-.stButton>button {
-  background-color: var(--card) !important;
-  color: var(--text) !important;
-  border: 1px solid rgba(0,0,0,0.08) !important;
-}
-input, textarea, select {
-  color: var(--text) !important;
-  background-color: var(--card) !important;
-  border: 1px solid rgba(0,0,0,0.06) !important;
-}
-[data-testid="stDataFrame"] {
-  color: var(--text) !important;
-}
-</style>
-"""
-st.markdown(_theme_css, unsafe_allow_html=True)
-
-# Theme selection
-if "theme" not in st.session_state:
-    st.session_state.theme = "light"
-
-theme_choice = st.radio("Choose Theme", ["Light", "Dark"],
-                        index=0 if st.session_state.theme == "light" else 1)
-
-st.session_state.theme = theme_choice.lower()
-
-# Inject JavaScript to update theme instantly
-js_code = f"""
-<script>
-document.documentElement.setAttribute('data-theme', '{st.session_state.theme}');
-</script>
-"""
-st.markdown(js_code, unsafe_allow_html=True)
-
-
 # Load and clean data
 df = pd.read_csv("Cleaned_Car_data.csv")
 
@@ -178,12 +95,4 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
-
-
-
-
-
-
-
-
 
