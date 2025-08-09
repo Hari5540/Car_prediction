@@ -16,6 +16,36 @@ if __name__ == "__main__":
 
 st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 
+# --- Theme Toggle Button ---
+if "theme" not in st.session_state:
+    st.session_state.theme = "light"
+
+def toggle_theme():
+    st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+
+# Toggle button at top of page
+col_toggle, _ = st.columns([1, 5])
+with col_toggle:
+    if st.button("🌙 Toggle Theme"):
+        toggle_theme()
+
+# Theme styling
+theme_css = """
+<style>
+/* Light mode */
+body, .main { background-color: white; color: black; }
+/* Dark mode */
+body.dark-mode, .main.dark-mode { background-color: #1e1e1e; color: white; }
+</style>
+"""
+st.markdown(theme_css, unsafe_allow_html=True)
+
+# Apply theme
+if st.session_state.theme == "dark":
+    st.markdown("<script>document.body.classList.add('dark-mode');</script>", unsafe_allow_html=True)
+else:
+    st.markdown("<script>document.body.classList.remove('dark-mode');</script>", unsafe_allow_html=True)
+
 # Load and clean data
 df = pd.read_csv("Cleaned_Car_data.csv")
 
@@ -95,5 +125,6 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
 
