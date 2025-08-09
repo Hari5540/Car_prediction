@@ -9,17 +9,43 @@ from sklearn.metrics import mean_squared_error
 # ✅ Set default page config and dark theme BEFORE anything else
 st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 
+# Full dark mode CSS override
 st.markdown("""
     <style>
-    body, .stApp {
-        background-color: #0e1117;
-        color: white;
-    }
-    .stSidebar {
-        background-color: #262730;
-    }
-    h1, h2, h3, h4, h5, h6, p, label {
+    /* App background */
+    .stApp {
+        background-color: #0e1117 !important;
         color: white !important;
+    }
+    
+    /* Sidebar background */
+    section[data-testid="stSidebar"] {
+        background-color: #262730 !important;
+    }
+
+    /* Text elements */
+    h1, h2, h3, h4, h5, h6, p, label, div, span {
+        color: white !important;
+    }
+
+    /* Dataframe table */
+    .dataframe {
+        background-color: #1e1e1e !important;
+        color: white !important;
+    }
+
+    /* Scrollbars dark */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #1e1e1e;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #555;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #888;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -117,5 +143,6 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
 
