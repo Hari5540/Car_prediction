@@ -134,3 +134,4 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
