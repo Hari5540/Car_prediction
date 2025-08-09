@@ -12,7 +12,7 @@ st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 # Universal dark mode for desktop & mobile
 st.markdown("""
     <style>
-    /* Root for both modes */
+    /* Universal background & text */
     html, body, [data-testid="stAppViewContainer"], .block-container {
         background-color: #0e1117 !important;
         color: white !important;
@@ -24,13 +24,13 @@ st.markdown("""
         color: white !important;
     }
 
-    /* Texts, labels, headers */
+    /* Text */
     h1, h2, h3, h4, h5, h6, p, label, div, span {
         color: white !important;
     }
 
-    /* Tables & DataFrames */
-    .dataframe, [data-testid="stDataFrame"] {
+    /* Dropdowns (brand, model, etc.) */
+    select, option {
         background-color: #1e1e1e !important;
         color: white !important;
     }
@@ -45,29 +45,21 @@ st.markdown("""
         background-color: #444 !important;
     }
 
-    /* Inputs (mobile + desktop) */
-    input, textarea, select {
+    /* Inputs */
+    input, textarea {
         background-color: #1e1e1e !important;
         color: white !important;
         border: 1px solid #555 !important;
     }
 
-    /* Scrollbars (mobile & desktop) */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-        background: #1e1e1e;
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #555;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #888;
+    /* DataFrames */
+    .dataframe, [data-testid="stDataFrame"] {
+        background-color: #1e1e1e !important;
+        color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
+
 
 
 def main():
@@ -163,6 +155,7 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
 
 
