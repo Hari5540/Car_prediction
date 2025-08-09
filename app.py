@@ -78,7 +78,7 @@ with col1:
     ax1.set_xlabel('Price (₹)')
     ax1.set_ylabel('Number of Cars')
     ax1.set_title('Car Price Distribution')
-    st.pyplot(fig1)
+  
 
 with col2:
     fig2, ax2 = plt.subplots()
@@ -95,4 +95,5 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
