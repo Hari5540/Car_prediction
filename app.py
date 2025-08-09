@@ -9,20 +9,66 @@ from sklearn.metrics import mean_squared_error
 # ✅ Set default page config and dark theme BEFORE anything else
 st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 
+# Universal dark mode for desktop & mobile
 st.markdown("""
     <style>
-    body, .stApp {
-        background-color: #0e1117;
-        color: white;
-    }
-    .stSidebar {
-        background-color: #262730;
-    }
-    h1, h2, h3, h4, h5, h6, p, label {
+    /* Root for both modes */
+    html, body, [data-testid="stAppViewContainer"], .block-container {
+        background-color: #0e1117 !important;
         color: white !important;
+    }
+
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: #262730 !important;
+        color: white !important;
+    }
+
+    /* Texts, labels, headers */
+    h1, h2, h3, h4, h5, h6, p, label, div, span {
+        color: white !important;
+    }
+
+    /* Tables & DataFrames */
+    .dataframe, [data-testid="stDataFrame"] {
+        background-color: #1e1e1e !important;
+        color: white !important;
+    }
+
+    /* Buttons */
+    .stButton>button {
+        background-color: #333 !important;
+        color: white !important;
+        border: 1px solid #555 !important;
+    }
+    .stButton>button:hover {
+        background-color: #444 !important;
+    }
+
+    /* Inputs (mobile + desktop) */
+    input, textarea, select {
+        background-color: #1e1e1e !important;
+        color: white !important;
+        border: 1px solid #555 !important;
+    }
+
+    /* Scrollbars (mobile & desktop) */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #1e1e1e;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #555;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #888;
     }
     </style>
 """, unsafe_allow_html=True)
+
 
 def main():
     st.title("Car Price Predictor")
@@ -117,6 +163,7 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
 
 
