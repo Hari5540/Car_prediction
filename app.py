@@ -6,6 +6,35 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
+# 🔹 Dark theme default (add this before everything else)
+st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
+
+st.markdown("""
+    <style>
+    body, .stApp {
+        background-color: #0e1117;
+        color: white;
+    }
+    .stSidebar {
+        background-color: #262730;
+    }
+    h1, h2, h3, h4, h5, h6, p, label {
+        color: white !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+def main():
+    st.title("Car Price Predictor")
+    # rest of your app
+
+if __name__ == "__main__":
+    main()
+
+# Your CSV loading and rest of code starts below
+df = pd.read_csv("Cleaned_Car_data.csv")
+...
+
 
 def main():
     st.title("Car Price Predictor")
@@ -98,4 +127,5 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
