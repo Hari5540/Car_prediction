@@ -78,7 +78,7 @@ with col1:
     ax1.set_xlabel('Price (₹)')
     ax1.set_ylabel('Number of Cars')
     ax1.set_title('Car Price Distribution')
-  
+    st.pyplot(fig1)
 
 with col2:
     fig2, ax2 = plt.subplots()
