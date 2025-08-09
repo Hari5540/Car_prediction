@@ -107,6 +107,19 @@ if st.sidebar.button("🔮 Predict Price"):
     prediction = model.predict([[selected_kms, selected_year]])[0]
     prediction = max(0, int(prediction))
     st.sidebar.success(f"Predicted Price: ₹ {prediction:,}")
+    
+# Sidebar UI
+st.sidebar.header("🔧 Filter Car Details")
+
+# Brand first, then Model
+selected_brand = st.sidebar.selectbox("Select Brand", sorted(df['brand'].unique()))
+models_available = df[df['brand'] == selected_brand]['company'].unique()
+selected_company = st.sidebar.selectbox("Select Model", sorted(models_available))
+
+selected_fuel = st.sidebar.selectbox("Select Fuel Type", sorted(df['fuel_type'].unique()))
+selected_kms = st.sidebar.slider("KMs Driven", int(df['kms_driven'].min()), int(df['kms_driven'].max()), 55000, step=1000)
+selected_year = st.sidebar.slider("Year of Purchase", int(df['year'].min()), int(df['year'].max()), 1998)
+
 
 # ------------------- MAIN CONTENT -------------------
 st.markdown("<h1 style='text-align: center;'>📊 Car Price Insights</h1>", unsafe_allow_html=True)
@@ -134,3 +147,4 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
