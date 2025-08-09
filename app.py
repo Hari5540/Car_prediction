@@ -52,6 +52,7 @@ selected_fuel = st.sidebar.selectbox("Select Fuel Type", sorted(df['fuel_type'].
 selected_kms = st.sidebar.slider("KMs Driven", int(df['kms_driven'].min()), int(df['kms_driven'].max()), 55000, step=1000)
 selected_year = st.sidebar.slider("Year of Purchase", int(df['year'].min()), int(df['year'].max()), 1998)
 
+
 # Filter display data for charts and preview
 df_filtered_display = df[(df['company'] == selected_company) &
                          (df['brand'] == selected_brand) &
@@ -98,5 +99,4 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
-I want dark theme as default for this website on mobile version too
 
