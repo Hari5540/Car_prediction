@@ -38,67 +38,66 @@ if st.session_state.show_theme:
         if st.button("🌙 Dark", key="theme_dark"):
             st.session_state.theme = "dark"
 
-# CSS using CSS variables — don't modify the attribute here, we'll set it below
+# Theme CSS
 _theme_css = """
 <style>
-:root{
+:root {
   --bg: #ffffff;
   --text: #0b0b0b;
-  --sidebar:#f8f9fb;
-  --card:#ffffff;
-  --muted:#6c757d;
+  --sidebar: #f8f9fb;
+  --card: #ffffff;
 }
-
-/* dark mode vars */
 [data-theme="dark"] {
   --bg: #0e1116;
   --text: #e6e6e6;
   --sidebar: #111315;
   --card: #1a1a1a;
-  --muted: #9a9a9a;
 }
-
-/* main app */
-[data-testid="stAppViewContainer"], .block-container, .main {
+[data-testid="stAppViewContainer"], .block-container {
   background-color: var(--bg) !important;
   color: var(--text) !important;
 }
-
-/* sidebar */
 [data-testid="stSidebar"] {
   background-color: var(--sidebar) !important;
   color: var(--text) !important;
 }
-
-/* buttons (Streamlit buttons + common wrappers) */
-.stButton>button, button[role="button"] {
-  background: var(--card) !important;
+[data-testid="stMarkdownContainer"] {
   color: var(--text) !important;
-  border: 1px solid rgba(0,0,0,0.06) !important;
 }
-
-/* inputs */
-input, textarea, select {
+.stButton>button {
   background-color: var(--card) !important;
   color: var(--text) !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
+}
+input, textarea, select {
+  color: var(--text) !important;
+  background-color: var(--card) !important;
   border: 1px solid rgba(0,0,0,0.06) !important;
 }
-
-/* dataframe fallback */
-[data-testid="stDataFrame"] { color: var(--text) !important; }
-
-/* headings/markdown */
-[data-testid="stMarkdownContainer"] { color: var(--text) !important; }
-h1,h2,h3,h4 { color: var(--text) !important; }
+[data-testid="stDataFrame"] {
+  color: var(--text) !important;
+}
 </style>
 """
 st.markdown(_theme_css, unsafe_allow_html=True)
 
-# Apply theme by setting the data-theme attr on <html> using current session_state.
-# This runs on every interaction and immediately makes CSS variables active.
-_current_theme = st.session_state.get("theme", "light")
-st.markdown(f"<script>document.documentElement.setAttribute('data-theme','{_current_theme}');</script>", unsafe_allow_html=True)
-# ---- end drop-in ----
+# Theme selection
+if "theme" not in st.session_state:
+    st.session_state.theme = "light"
+
+theme_choice = st.radio("Choose Theme", ["Light", "Dark"],
+                        index=0 if st.session_state.theme == "light" else 1)
+
+st.session_state.theme = theme_choice.lower()
+
+# Inject JavaScript to update theme instantly
+js_code = f"""
+<script>
+document.documentElement.setAttribute('data-theme', '{st.session_state.theme}');
+</script>
+"""
+st.markdown(js_code, unsafe_allow_html=True)
+
 
 # Load and clean data
 df = pd.read_csv("Cleaned_Car_data.csv")
@@ -179,6 +178,7 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
 
 
