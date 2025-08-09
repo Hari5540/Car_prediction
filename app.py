@@ -16,31 +16,106 @@ if __name__ == "__main__":
 
 st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 
-# --- Theme Button with Light/Dark Options ---
+# --- Theme button with Light/Dark options (drop-in; paste right after st.set_page_config) ---
 if "theme" not in st.session_state:
     st.session_state.theme = "light"
+if "show_theme" not in st.session_state:
+    st.session_state.show_theme = False
 
-# Show options only after clicking button
+# toggle show/hide of theme options
 if st.button("🎨 Theme"):
-    selected_theme = st.radio("Select Theme", ["Light", "Dark"], index=0 if st.session_state.theme == "light" else 1)
-    st.session_state.theme = selected_theme.lower()
+    st.session_state.show_theme = not st.session_state.show_theme
 
-# Theme styling
-theme_css = """
+# show radio options only when requested
+if st.session_state.show_theme:
+    choice = st.radio("Choose theme", ["Light", "Dark"],
+                      index=0 if st.session_state.theme == "light" else 1,
+                      key="theme_radio")
+    # apply immediately
+    st.session_state.theme = choice.lower()
+    st.experimental_rerun()  # ensures CSS/JS update applies immediately
+
+# CSS that uses a data-theme attribute (targets Streamlit containers)
+_theme_css = """
 <style>
-/* Light mode */
-body, .main { background-color: white; color: black; }
-/* Dark mode */
-body.dark-mode, .main.dark-mode { background-color: #1e1e1e; color: white; }
+:root {
+  --bg: #ffffff;
+  --text: #0b0b0b;
+  --sidebar: #f8f9fb;
+  --card: #ffffff;
+}
+
+/* dark mode vars */
+[data-theme="dark"] {
+  --bg: #0e1116;
+  --text: #e6e6e6;
+  --sidebar: #111315;
+  --card: #1a1a1a;
+}
+
+/* main app container */
+[data-testid="stAppViewContainer"], .block-container {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* sidebar */
+[data-testid="stSidebar"] {
+  background-color: var(--sidebar) !important;
+  color: var(--text) !important;
+}
+
+/* headers / markdown */
+[data-testid="stMarkdownContainer"] {
+  color: var(--text) !important;
+}
+
+/* buttons / cards */
+.stButton>button, .css-1d391kg, .css-1b08t9f {
+  background-color: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+/* tables / dataframe container fallback */
+[data-testid="stDataFrame"] {
+  color: var(--text) !important;
+  background-color: transparent !important;
+}
+
+/* small fixes for inputs & labels */
+input, textarea, select {
+  color: var(--text) !important;
+  background-color: var(--card) !important;
+}
 </style>
 """
-st.markdown(theme_css, unsafe_allow_html=True)
+st.markdown(_theme_css, unsafe_allow_html=True)
 
-# Apply theme
+# set data-theme attribute on <html> so CSS variables apply
 if st.session_state.theme == "dark":
-    st.markdown("<script>document.body.classList.add('dark-mode');</script>", unsafe_allow_html=True)
+    st.markdown("<script>document.documentElement.setAttribute('data-theme', 'dark');</script>", unsafe_allow_html=True)
 else:
-    st.markdown("<script>document.body.classList.remove('dark-mode');</script>", unsafe_allow_html=True)
+    st.markdown("<script>document.documentElement.setAttribute('data-theme', 'light');</script>", unsafe_allow_html=True)
+
+# -------------------------
+# Optional (recommended) helper to make matplotlib plots follow the theme.
+# Use this inside your plotting code BEFORE showing the plot:
+#
+# bg = "#0e1116" if st.session_state.theme == "dark" else "#ffffff"
+# fg = "#e6e6e6" if st.session_state.theme == "dark" else "#000000"
+# fig.patch.set_facecolor(bg)
+# ax.set_facecolor(bg)
+# ax.title.set_color(fg)
+# ax.xaxis.label.set_color(fg)
+# ax.yaxis.label.set_color(fg)
+# ax.tick_params(colors=fg)
+# for spine in ax.spines.values():
+#     spine.set_color(fg)
+#
+# Example: after fig, ax = plt.subplots()
+# then run the block above (adapt names) and then st.pyplot(fig)
+# -------------------------
 
 # Load and clean data
 df = pd.read_csv("Cleaned_Car_data.csv")
@@ -121,6 +196,7 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
+
 
 
 
