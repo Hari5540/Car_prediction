@@ -6,61 +6,6 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
-# ✅ Set default page config and dark theme BEFORE anything else
-st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
-
-# Universal dark mode for desktop & mobile
-st.markdown("""
-    <style>
-    /* Universal background & text */
-    html, body, [data-testid="stAppViewContainer"], .block-container {
-        background-color: #0e1117 !important;
-        color: white !important;
-    }
-
-    /* Sidebar */
-    section[data-testid="stSidebar"] {
-        background-color: #262730 !important;
-        color: white !important;
-    }
-
-    /* Text */
-    h1, h2, h3, h4, h5, h6, p, label, div, span {
-        color: white !important;
-    }
-
-    /* Dropdowns (brand, model, etc.) */
-    select, option {
-        background-color: #1e1e1e !important;
-        color: white !important;
-    }
-
-    /* Buttons */
-    .stButton>button {
-        background-color: #333 !important;
-        color: white !important;
-        border: 1px solid #555 !important;
-    }
-    .stButton>button:hover {
-        background-color: #444 !important;
-    }
-
-    /* Inputs */
-    input, textarea {
-        background-color: #1e1e1e !important;
-        color: white !important;
-        border: 1px solid #555 !important;
-    }
-
-    /* DataFrames */
-    .dataframe, [data-testid="stDataFrame"] {
-        background-color: #1e1e1e !important;
-        color: white !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
 
 def main():
     st.title("Car Price Predictor")
@@ -69,8 +14,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-# Load and clean data
-df = pd.read_csv("Cleaned_Car_data.csv")
+st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 
 # Load and clean data
 df = pd.read_csv("Cleaned_Car_data.csv")
@@ -107,7 +51,6 @@ selected_company = st.sidebar.selectbox("Select Model", sorted(models_available)
 selected_fuel = st.sidebar.selectbox("Select Fuel Type", sorted(df['fuel_type'].unique()))
 selected_kms = st.sidebar.slider("KMs Driven", int(df['kms_driven'].min()), int(df['kms_driven'].max()), 55000, step=1000)
 selected_year = st.sidebar.slider("Year of Purchase", int(df['year'].min()), int(df['year'].max()), 1998)
-
 
 # Filter display data for charts and preview
 df_filtered_display = df[(df['company'] == selected_company) &
@@ -155,9 +98,3 @@ if not df_filtered_display.empty:
     st.dataframe(df_filtered_display[['name', 'company', 'brand', 'year', 'kms_driven', 'fuel_type', 'Price']].head())
 else:
     st.warning("⚠️ No data found for the selected filter combination.")
-
-
-
-
-
-
